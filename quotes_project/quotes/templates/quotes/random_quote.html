@@ -1,0 +1,111 @@
+Давайте создадим шаблон random_quote.html, который будет отображать случайную цитату с возможностью взаимодействия.
+
+random_quote.html
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Случайная цитата</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .quote-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .quote-text {
+            font-size: 1.5em;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .quote-source {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .buttons {
+            margin: 20px 0;
+        }
+        
+        button {
+            margin: 0 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .likes-dislikes {
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="quote-container">
+        <div class="quote-text" id="quote-text">
+            {{ quote.text }}
+        </div>
+        <div class="quote-source">
+            — {{ quote.source }}
+        </div>
+        
+        <div class="buttons">
+            <button onclick="likeQuote({{ quote.id }})">Лайк</button>
+            <button onclick="dislikeQuote({{ quote.id }})">Дизлайк</button>
+        </div>
+        
+        <div class="likes-dislikes">
+            <span id="likes-{{ quote.id }}">Лайки: {{ quote.likes }}</span> | 
+            <span id="dislikes-{{ quote.id }}">Дизлайки: {{ quote.dislikes }}</span> | 
+            Просмотры: {{ quote.views }}
+        </div>
+    </div>
+
+    <a href="{% url 'random_quote' %}">Получить новую цитату</a>
+
+    <script>
+        function updateQuote(data) {
+            document.getElementById('quote-text').textContent = data.text;
+            document.getElementById('likes-' + data.id).textContent = 'Лайки: ' + data.likes;
+            document.getElementById('dislikes-' + data.id).textContent = 'Дизлайки: ' + data.dislikes;
+        }
+
+        function likeQuote(id) {
+            fetch(`{% url 'like_quote' 0 %}`.replace('0', id))
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('likes-' + id).textContent = 'Лайки: ' + data.likes;
+                    document.getElementById('dislikes-' + id).textContent = 'Дизлайки: ' + data.dislikes;
+                    updateQuote(data.new_quote);
+                })
+                .catch(error => console.error('Ошибка:', error));
+        }
+
+        function dislikeQuote(id) {
+            fetch(`{% url 'dislike_quote' 0 %}`.replace('0', id))
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('likes-' + id).textContent = 'Лайки: ' + data.likes;
+                    document.getElementById('dislikes-' + id).textContent = 'Дизлайки: ' + data.dislikes;
+                    updateQuote(data.new_quote);
+                })
+                .catch(error => console.error('Ошибка:', error));
+        }
+    </script>
+</body>
+</html>

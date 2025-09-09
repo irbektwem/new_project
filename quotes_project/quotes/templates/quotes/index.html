@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Случайная цитата</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #quote-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="quote-container">
+        <h1>Случайная цитата</h1>
+        <p id="quote-text">{{ quote.text }}</p>
+        <p id="quote-source">— {{ quote.source }}</p>
+        <p>Просмотры: <span id="views">{{ quote.views }}</span></p>
+        <p>
+            <button onclick="likeQuote({{ quote.id }})">Лайк</button>
+            <button onclick="dislikeQuote({{ quote.id }})">Дизлайк</button>
+        </p>
+        <p>
+            Лайки: <span id="likes-{{ quote.id }}">{{ quote.likes }}</span> | 
+            Дизлайки: <span id="dislikes-{{ quote.id }}">{{ quote.dislikes }}</span>
+        </p>
+    </div>
+    <a href="{% url 'submit_quote' %}">Добавить новую цитату</a>
+
+    <script>
+        function updateQuote(data) {
+            document.getElementById('quote-text').textContent = data.text;
+            document.getElementById('quote-source').textContent = '— ' + data.source;
+            document.getElementById('views').textContent = data.views;
+            document.getElementById('likes-' + data.id).textContent = data.likes;
+            document.getElementById('dislikes-' + data.id).textContent = data.dislikes;
+        }
+
+        function likeQuote(id) {
+            fetch(`{% url 'like_quote' 0 %}`.replace('0', id))
+                .then(response => response.json())
+                .then(data => {
+                    // Обновляем счётчики для старой цитаты
+                    document.getElementById('likes-' + id).textContent = data.likes;
+                    document.getElementById('dislikes-' + id).textContent = data.dislikes;
+                    
+                    // Обновляем содержимое для новой цитаты
+                    updateQuote(data.new_quote);
+                })
+                .catch(error => console.error('Ошибка:', error));
+        }
+
+        function dislikeQuote(id) {
+            fetch(`{% url 'dislike_quote' 0 %}`.replace('0', id))
+                .then(response => response.json())
+                .then(data => {
+                    // Обновляем счётчики для старой цитаты
+                    document.getElementById('likes-' + id).textContent = data.likes;
+                    document.getElementById('dislikes-' + id).textContent = data.dislikes;
+                    
+                    // Обновляем содержимое для новой цитаты
+                    updateQuote(data.new_quote);
+                })
+                .catch(error => console.error('Ошибка:', error));
+        }
+    </script>
+</body>
+</html>

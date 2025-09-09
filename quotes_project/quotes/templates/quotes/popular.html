@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Популярные цитаты</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        .popular-quotes {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quote-item {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+        
+        .quote-item:last-child {
+            border-bottom: none;
+        }
+        
+        .quote-text {
+            font-size: 1.2em;
+            margin: 5px 0;
+        }
+        
+        .quote-source {
+            font-style: italic;
+            color: #555;
+        }
+        
+        .quote-stats {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="popular-quotes">
+        <h1>Популярные цитаты</h1>
+        
+        {% if quotes %}
+            {% for quote in quotes %}
+                <div class="quote-item">
+                    <p class="quote-text">{{ quote.text }}</p>
+                    <p class="quote-source">— {{ quote.source }}</p>
+                    <div class="quote-stats">
+                        <span>Просмотров: {{ quote.views }}</span> |
+                        <span>Лайки: {{ quote.likes }}</span> |
+                        <span>Дизлайки: {{ quote.dislikes }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Пока нет популярных цитат.</p>
+        {% endif %}
+    </div>
+    
+    <a href="{% url 'index' %}">Вернуться на главную</a>
+</body>
+</html>

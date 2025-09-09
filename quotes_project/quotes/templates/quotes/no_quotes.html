@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нет цитат</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        .no-quotes {
+            margin: 50px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-quotes">
+        <h1>Оупс!</h1>
+        <p>Сейчас в нашей коллекции нет цитат.</p>
+        <p>Хотите стать первым, кто добавит цитату?</p>
+        <a href="{% url 'submit_quote' %}">
+            <button>Добавить цитату</button>
+        </a>
+    </div>
+</body>
+</html>
